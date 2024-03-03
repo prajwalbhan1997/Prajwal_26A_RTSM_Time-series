@@ -1,19 +1,8 @@
 ---
-title: "RTSM_PROJ2_MARICO.NS"
-output: html_document
-date: "2024-03-03"
+output:
+  html_document: default
+  pdf_document: default
 ---
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
 ```{r}
 # # Required Packages
 packages = c('quantmod','car','forecast','tseries','FinTS', 'rugarch','utf8','ggplot2')
@@ -143,7 +132,7 @@ Note: Interpretation of the coefficients and model selection details may require
 
 ```{r}
 #Arima manuplation
-arma13 = arima(MARICO.NS_return, order = c(5, 0, 4)); arma13
+arma13 = arima(MARICO.NS_return, order = c(0, 0, 2)); arma13
 
 ```
 
@@ -153,18 +142,17 @@ plot(ds_fpq)
 ```
 Analysis:
 
-Objective: To fit an ARIMA(5, 0, 4) model to the daily returns ('MARICO.NS_return') of MARICO.NS stock and generate forecasts.
+Objective: To fit an ARIMA(0, 0, 2) model to the daily returns ('MARICO.NS_return') of MARICO.NS stock and generate forecasts.
 Analysis: Used the 'arima' function to fit the ARIMA model and the 'forecast' function to generate forecasts.
 Results:
 
-ARIMA Model (5, 0, 4):
+ARIMA Model (0, 0, 2):
 Coefficients:
-  - AR: ar1 to ar5
-  - MA: ma1 to ma4
+    - MA: ma1 to ma2
   - Intercept term
   - sigma^2 (variance) estimated as 0.0002319
-  - Log likelihood = 4092.31
-  - AIC =  -8162.63
+  - Log likelihood = 4086.76
+  - AIC =  -8165.53
 
 Forecasting:
 Generated forecasts for the next 500 time points using the fitted ARIMA model.
@@ -173,7 +161,7 @@ Plot:
 The plot displays the original time series of daily returns along with the forecasted values.
 
 Implication:
-The ARIMA(5, 0, 4) model is fitted to the historical daily returns of MARICO.NS stock, providing insights into the underlying patterns. The generated forecast can be used for future predictions, and the plot visually represents the model's performance.
+The ARIMA(0, 0, 2) model is fitted to the historical daily returns of MARICO.NS stock, providing insights into the underlying patterns. The generated forecast can be used for future predictions, and the plot visually represents the model's performance.
 
 Note: Interpretation of coefficients and model evaluation details may require further analysis based on the specific context of the financial data.
 
@@ -187,17 +175,17 @@ lb_test_ds_A = Box.test(arma13$residuals); lb_test_ds_A
 ```
 Analysis:
 
-Objective: To perform a Ljung-Box test for autocorrelation on the residuals of the ARIMA(5, 0, 4) model.
+Objective: To perform a Ljung-Box test for autocorrelation on the residuals of the ARIMA(0, 0, 2) model.
 Analysis: Conducted the Ljung-Box test using the 'Box.test' function on the residuals of the ARIMA model and obtained results.
 Results:
 
 Ljung-Box Test for Autocorrelation on Residuals:
-  - X-squared statistic: 2.1708e-08
+  - X-squared statistic: 0.0023732
   - Degrees of freedom: 1
-  - p-value: 0.9999
+  - p-value: 9611
 
 Implication:
-The Ljung-Box test indicates no significant autocorrelation in the residuals of the ARIMA(5, 0, 4) model. The high p-value (0.9999) suggests that there is no evidence against the null hypothesis of no autocorrelation.
+The Ljung-Box test indicates no significant autocorrelation in the residuals of the ARIMA(0, 0, 2) model. The high p-value (0.9611) suggests that there is no evidence against the null hypothesis of no autocorrelation.
 
 Action:
 The absence of autocorrelation in residuals is a positive outcome, indicating that the ARIMA model adequately captures the temporal patterns in the time series.
@@ -219,20 +207,18 @@ stk_ret_arch_test # Inference : Return Series is Heteroskedastic (Has Volatility
 ```
 
 Analysis:
-Objective: To test for volatility clustering or heteroskedasticity in the residuals of the ARIMA(5, 0, 4) model.
+Objective: To test for volatility clustering or heteroskedasticity in the residuals of the ARIMA(0, 0, 2) model.
 Analysis: Conducted Box test and ARCH test on the squared residuals to assess the presence of volatility clustering.
 Results:
 
 1. Box Test for Volatility Clustering:
-   - X-squared statistic: 133.21
-   - Degrees of freedom: 10
-   - p-value: < 2.2e-16
-   Inference: The Box test indicates significant evidence against the null hypothesis, suggesting that the return variance series exhibits volatility clustering or heteroskedasticity.
+   X-squared = 148.34, df = 10, p-value < 2.2e-16
+  
+  Inference: The Box test indicates significant evidence against the null hypothesis, suggesting that the return variance series exhibits volatility clustering or heteroskedasticity.
 
 2. ARCH Test for Volatility Clustering:
-   - Chi-squared statistic: 81.892
-   - Degrees of freedom: 10
-   - p-value: < 2.135e-13
+   Chi-squared = 88.995, df = 10, p-value = 8.471e-15
+   
    Inference: The ARCH test also provides strong evidence against the null hypothesis, supporting the presence of ARCH effects in the return series. This implies that the returns have volatility clustering.
 
 Implication:
@@ -264,27 +250,28 @@ Results:
 1. GARCH Model 1:
    - sGARCH(1,1) model with ARFIMA(0,0,0) mean.
    - Optimal Parameters:
-      - mu (Mean):-0.000138
-      - omega  0.000035 
-      - alpha1 0.082701
-      - beta1  0.762241
-      - loglikelihood 4133.838 
+        Estimate  
+      mu     -0.000083    
+      omega   0.000032    
+      alpha1  0.078572    
+      beta1   0.780098 
+      loglikelihood 4128.852
       - Weighted Ljung-Box Test on Standardized Residuals and Squared Residuals show significant autocorrelation.
       - Weighted ARCH LM Tests indicate evidence of ARCH effects.
 
 2. GARCH Model 2:
-   - sGARCH(1,1) model with ARFIMA(4,5,0) mean.
+   - sGARCH(1,1) model with ARFIMA(4,0,5) mean.
    - Optimal Parameters are similar to Model 1.
-   - loglikelihood 4133.838 
+   - loglikelihood 4136.595
   - Weighted Ljung-Box Test and Weighted ARCH LM Tests show evidence of autocorrelation and ARCH effects.
 
 ARCH Test on Squared Residuals:
                         statistic 
-Lag[1]                      1.723  
-Lag[2*(p+q)+(p+q)-1][5]     2.157  
-Lag[4*(p+q)+(p+q)-1][9]     2.986  
+Lag[1]                      1.127  
+Lag[2*(p+q)+(p+q)-1][5]     1.705  
+Lag[4*(p+q)+(p+q)-1][9]     2.765  
 d.o.f=2
-- p-value:  = 0.002106
+- p-value:  = 0.03455
 Inference: The ARCH test confirms the presence of volatility clustering or heteroskedasticity in the residuals.
 
 Implication:
