@@ -222,7 +222,7 @@ Results:
    Inference: The ARCH test also provides strong evidence against the null hypothesis, supporting the presence of ARCH effects in the return series. This implies that the returns have volatility clustering.
 
 Implication:
-The results from both tests suggest that the residuals of the ARIMA(5, 0, 4) model exhibit volatility clustering or heteroskedasticity. Understanding and accounting for this pattern in volatility is essential for risk management and forecasting.
+The results from both tests suggest that the residuals of the ARIMA(0, 0, 2) model exhibit volatility clustering or heteroskedasticity. Understanding and accounting for this pattern in volatility is essential for risk management and forecasting.
 
 Note: Interpretation may vary based on the specific context of the financial data and the assumptions underlying the time series analysis.
 
